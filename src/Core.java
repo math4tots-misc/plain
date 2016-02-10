@@ -12,12 +12,6 @@ public abstract class Core {
       return value;
     List v = (List) value;
     Value head = eval(scope, v.get(0));
-    if (head instanceof Function) {
-      List args = new List();
-      for (int i = 1; i < v.size(); i++)
-        args.add(eval(scope, v.get(i)));
-      return ((Function) head).call(args);
-    }
     throw new Err(head.toString() + " is not callable");
   }
   public abstract static class Value {}
@@ -61,45 +55,5 @@ public abstract class Core {
           ((List) other).value.equals(value);
     }
   }
-  public static final class Table extends Value {
-    private final HashMap<Value, Value> value;
-    public Table(HashMap<Value, Value> value) { this.value = value; }
-    public int hashCode() { return value.hashCode(); }
-    public boolean equals(Object other) {
-      return
-          (other instanceof Table) &&
-          ((Table) other).value.equals(value);
-    }
-  }
-  public static final class Blob extends Value {
-    private final Blob meta;
-    private final HashMap<String, Value> value;
-    public Blob(Blob meta, HashMap<String, Value> value) {
-      this.meta = meta;
-      this.value = value;
-    }
-    public int hashCode() { return value.hashCode(); }
-    public boolean equals(Object other) {
-      return
-          (other instanceof Blob) &&
-          ((Table) other).value.equals(value);
-    }
-  }
-  public static final class Scope extends Value {
-    private final Scope parent;
-    private final HashMap<String, Value> value;
-    public Scope(Scope parent, HashMap<String, Value> value) {
-      this.parent = parent;
-      this.value = value;
-    }
-    public int hashCode() { return value.hashCode(); }
-    public boolean equals(Object other) {
-      return
-          (other instanceof Scope) &&
-          ((Table) other).value.equals(value);
-    }
-  }
-  public abstract static class Function extends Value {
-    public abstract Value call(List args);
-  }
+  public static final class Scope extends Value {}
 }
